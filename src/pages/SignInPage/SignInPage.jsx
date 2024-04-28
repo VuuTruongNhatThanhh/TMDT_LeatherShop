@@ -48,10 +48,13 @@ useEffect(()=>{
 },[isSuccess])
 
 const handleGetDetailsUser = async(id, token) => {
+  
   const res = await UserService.getDetailsUser(id, token)
   // Truyền tất cả thông tin người dùng vào redux/userSlide 
   //Tách từng thuộc tính của data ra, với đưa token vào trong cái biến access_token
+  // Dùng redux
   dispatch(updateUser({...res?.data, access_token: token}))
+  
   
 }
 

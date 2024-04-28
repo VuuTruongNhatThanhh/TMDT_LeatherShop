@@ -188,6 +188,24 @@ const refreshToken = async(req, res) => {
     }
 }
 
+const logoutUser = async(req, res) => {
+    try{
+        // Xóa cái cookie lấy vào khi login
+        res.clearCookie('refresh_token')
+
+       
+            return res.status(200).json({
+                status: 'OK',
+                message: 'Logout successfully'
+
+            })
+    } catch (e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
+
 
 
 // Phải export nó ra ngoài mới sử dụng được
@@ -198,5 +216,6 @@ module.exports = {
     deleteUser,
     getAllUser,
     getDetailsUser,
-    refreshToken
+    refreshToken,
+    logoutUser
 } 

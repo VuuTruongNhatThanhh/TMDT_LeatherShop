@@ -30,3 +30,8 @@ export const refreshToken = async () => {
     })
     return res.data
 }
+
+export const logoutUser = async () => {
+    const res = await axios.post(`${API_URL_BACK_END}/user/log-out`)
+    return res.data
+}
