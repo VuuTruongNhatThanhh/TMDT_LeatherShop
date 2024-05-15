@@ -12,4 +12,9 @@ body {
 
 html {
   font-size: 100%;
+  user-select: none;
+}
+
+*{
+  user-select: none;
 }
