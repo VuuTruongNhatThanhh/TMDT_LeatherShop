@@ -35,8 +35,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "preinstall": "npm install --legacy-peer-deps",
-    "build": "npm run preinstall && react-scripts build",
+   "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
