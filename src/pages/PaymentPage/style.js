@@ -55,8 +55,8 @@ export const WrapperRight = styled.div`
 
 export const WrapperInfo = styled.div`
   padding: 17px 20px;
-  border-bottom: 1px solid #f5f5f5;
-  background: #fff;
+ 
+  background: #F6F1EB;
   border-top-right-radius: 6px;
   border-top-left-radius: 6px;
   width: 100%
@@ -67,7 +67,7 @@ export const WrapperTotal = styled.div`
    align-items: flex-start; 
    justify-content: space-between;
     padding: 17px 20px;
-    background: #fff ;
+    background: #F6F1EB ;
     border-bottom-right-radius: 6px;
     border-bottom-left-radius: 6px;
 `

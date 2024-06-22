@@ -1,8 +1,12 @@
 import AdminPage from "../pages/AdminPage/AdminPage";
 import DetailsOrderPage from "../pages/DetailsOrderPage/DetailsOrderPage";
+import ChangePass from "../pages/ForgotPassPage/ChangePass";
+import ForgotPassPage from "../pages/ForgotPassPage/ForgotPassPage";
+import OTPPageForgotPass from "../pages/ForgotPassPage/OTPPageForgotPass";
 import HomePage from "../pages/HomePage/HomePage";
 import MyOrder from "../pages/MyOrderPage/MyOrder";
 import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
+import OTPPage from "../pages/OTPPage/OTPPage";
 import OrderPage from "../pages/OrderPage/OrderPage";
 import OrderSuccess from "../pages/OrderSuccess/OrderSuccess";
 import PaymentPage from "../pages/PaymentPage/PaymentPage";
@@ -12,13 +16,16 @@ import ProfilePage from "../pages/Profile/ProfilePage";
 import SignInPage from "../pages/SignInPage/SignInPage";
 import SignUpPage from "../pages/SignUpPage/SignUpPage";
 import TypeProductPage from "../pages/TypeProductPage/TypeProductPage";
+import SellingPage from "../pages/SellingPage/SellingPage"
+import AboutPage from "../pages/AboutPage/AboutPage"
+import ContactPage from "../pages/ContactPage/ContactPage";
 
 export const routes = [
     {
         path: '/',
         page: HomePage,
         // Hiện header hay không
-        isShowHeader: true
+        isShowHeader: false
     },
     {
         path: '/order',
@@ -60,6 +67,11 @@ export const routes = [
         isShowHeader: true
     },
     {
+        path: '/selling',
+        page: SellingPage,
+        isShowHeader: true
+    },
+    {
         path: '/sign-in',
         page: SignInPage,
         isShowHeader: false
@@ -72,7 +84,7 @@ export const routes = [
     {
         path: '/profile-user',
         page: ProfilePage,
-        isShowHeader: true
+        isShowHeader: false
     },
     {
         path: '/product-details/:id',
@@ -84,6 +96,36 @@ export const routes = [
         page: AdminPage,
         isShowHeader: false,
         isPrivate: true
+    },
+    {
+        path: '/otp',
+        page: OTPPage,
+        isShowHeader: false
+    },
+    {
+        path: '/otp-forgot',
+        page: OTPPageForgotPass,
+        isShowHeader: false
+    },
+    {
+        path: '/forgot_pass',
+        page: ForgotPassPage,
+        isShowHeader: false
+    },
+    {
+        path: '/change-pass',
+        page: ChangePass,
+        isShowHeader: false
+    },
+    {
+        path: '/about',
+        page: AboutPage,
+        isShowHeader: true
+    },
+    {
+        path: '/contact',
+        page: ContactPage,
+        isShowHeader: true
     },
     // Khi chọn mấy cái link không có trong đây
     {

@@ -26,7 +26,13 @@ const CardComponent = (props) => {
         onClick={()=>countInStock !==0 && handleDetailProduct(id)}
         disabled={countInStock===0}
       >
-        <img src={soldout} alt="" style={{width:'90px', height:'90px', position:'absolute', top:0, left:0}} />
+       {countInStock === 0 && (
+  <img 
+    src={soldout} 
+    alt="Sold Out" 
+    style={{width:'90px', height:'90px', position:'absolute', top:0, left:0}} 
+  />
+)}
        <StyleNameProduct>{name}</StyleNameProduct>
        <WrapperReportText>
         <span>
@@ -36,7 +42,9 @@ const CardComponent = (props) => {
        </WrapperReportText>
        <WrapperPriceText>
        {convertPrice(price)} <sup> đ</sup>
-        <WrapperDiscountText>-{discount ||5}%</WrapperDiscountText>
+       <WrapperDiscountText>
+  {discount ? `-${discount}%` : ''}
+</WrapperDiscountText>
        </WrapperPriceText>
       </WrapperCardStyle>
      

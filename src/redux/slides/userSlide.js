@@ -10,6 +10,7 @@ const initialState = {
   id: '',
   isAdmin: false,
   city:'',
+  point:0
 }
 
 export const userSlide = createSlice({
@@ -19,7 +20,7 @@ export const userSlide = createSlice({
     // Dùng redux để lấy ra thông tin của user, quản lý nó trên trình duyệt
     updateUser: (state, action)=>{
       const { name ='', email='', access_token='', address='', phone='', avatar='', _id ='', isAdmin, city='',
-        refreshToken =''
+        refreshToken ='',point=0
        } = action.payload
       state.name = name;
       state.email = email;
@@ -31,6 +32,21 @@ export const userSlide = createSlice({
       state.isAdmin = isAdmin;
       state.city = city;
       state.refreshToken = refreshToken;
+      state.point=point
+    },
+    partialUpdateUser: (state, action) => {
+      const { name, email, access_token, address, phone, avatar, _id, isAdmin, city, refreshToken, point } = action.payload
+      if (name !== undefined) state.name = name;
+      if (email !== undefined) state.email = email;
+      if (address !== undefined) state.address = address;
+      if (phone !== undefined) state.phone = phone;
+      if (avatar !== undefined) state.avatar = avatar;
+      if (_id !== undefined) state.id = _id;
+      if (access_token !== undefined) state.access_token = access_token;
+      if (isAdmin !== undefined) state.isAdmin = isAdmin;
+      if (city !== undefined) state.city = city;
+      if (refreshToken !== undefined) state.refreshToken = refreshToken;
+      if (point !== undefined) state.point = point;
     },
     // Để khi logout reset lại mấy cái này
     resetUser: (state)=>{
@@ -43,7 +59,8 @@ export const userSlide = createSlice({
       state.id = '';
       state.access_token = '';
       state.isAdmin= false;
-      state.city = ''
+      state.city = '';
+      state.point=0
     },
    
   
@@ -51,6 +68,6 @@ export const userSlide = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { updateUser, resetUser } = userSlide.actions
+export const { updateUser, resetUser, partialUpdateUser } = userSlide.actions
 
 export default userSlide.reducer

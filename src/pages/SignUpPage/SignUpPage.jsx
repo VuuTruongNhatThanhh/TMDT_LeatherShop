@@ -18,6 +18,7 @@ const SignUpPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [otp, setOtp] = useState(0);
 
         // gọi qua bên api
 const mutation = useMutationHooks(
@@ -32,12 +33,14 @@ const { data, isPending, isSuccess, isError } = mutation
 useEffect(()=>{
   if(isSuccess && data?.status !== 'ERR' ) {
     // Khi đăng ký thành công hiển thị thông báo (Message components), chuyển đến trang SignIn
+    const idUser = data?.data?._id
     message.success('Đăng ký tài khoản thành công')
-    navigateSignIn()
+    navigateSignIn(idUser)
   } else if (isError){
     message.error()
   }
 },[isSuccess, isError])
+
 
     const handleOnchangeEmail=(value) =>{
          // Lấy tất cả ký tự từ bàn phím nhận vào bên InputForm truyền vào đây
@@ -52,16 +55,27 @@ useEffect(()=>{
     setConfirmPassword(value)
 } 
 
+
+
 const handleSignUp=()=>{
+  
+  
+// console.log('otp',otp); // In ra mã OTP gồm 4 số ngẫu nhiên 
   mutation.mutate({email, password, confirmPassword})
 }
 
-   
+
+
+
+  
    
     const navigate = useNavigate()
-    const navigateSignIn = () => {
-      navigate('/sign-in')
+    const navigateSignIn = (idUser) => {
+      navigate('/otp', { state: { idUser } });
     }
+
+
+    
 
     return (
         <div style={{display:'flex', alignItems:'center', justifyContent:'center',background:'#ccc' , height:'100vh'}}>

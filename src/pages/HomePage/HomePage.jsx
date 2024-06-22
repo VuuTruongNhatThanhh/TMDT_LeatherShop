@@ -15,7 +15,8 @@ import { retry } from "@reduxjs/toolkit/query";
 import { useSelector } from "react-redux";
 import Loading from "../../components/LoadingComponent/Loading";
 import { useDebounce } from "../../hooks/useDebounce";
-
+import { useNavigate } from "react-router-dom";
+import HeaderComponent from "../../components/HeaderComponent/HeaderComponent";
 const HomePage = () => {
     // Cái tên trong mảng này là nav
     const arr = ['Trang chủ','Giới thiệu','Sản phẩm','Tự thiết kế','Liên hệ']
@@ -25,9 +26,12 @@ const HomePage = () => {
     const searchDebounce = useDebounce(searchProduct, 500)
     const refSearch = useRef()
     const [stateProduct, setStateProduct] = useState([])
-    const [limit, setLimit] = useState(5)
+    const [limit, setLimit] = useState(100)
     const [loading, setLoading] = useState(false)
     const [typeProducts, setTypeProducts] = useState([])
+    const [filteredProducts, setFilteredProducts] = useState([]);
+    
+    const navigate = useNavigate()
     const fetchProductAll = async(context) => {
         // In ra xem context nó gồm có những gì
     //    console.log('context', context)
@@ -57,6 +61,14 @@ const HomePage = () => {
       
      }
 
+     const formatDate = (isoDate) => {
+        const date = new Date(isoDate);
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}-${month}-${year}`;
+      };
+
      useEffect(()=>{
         fetchAllTypeProduct()
      },[])
@@ -80,6 +92,9 @@ const HomePage = () => {
         config: { retry: 3, retryDelay: 1000, keepPreviousData: true }
       });
 
+      
+    //   console.log('products', products)
+
     //   console.log('isPreviousData', isPreviousData, isPending)
 
 
@@ -90,9 +105,13 @@ const HomePage = () => {
     //         setStateProduct(products?.data)
     //     }
     // },[products])
-   
+    const handleNavigateSelled=()=>{
+            navigate('/')
+    }
    
     return (
+        <>
+        <HeaderComponent isHiddenSearch />
        <Loading isPending={isPending || loading}>
         <div style={ {padding:'0 120px'}}>
             <WrapperTypeProduct>
@@ -101,12 +120,23 @@ const HomePage = () => {
                 <TypeProduct name={item} key={item}/>
             )
            })}
+            <TypeProduct name={'Sản phẩm bán chạy'} onClick={handleNavigateSelled}/>
+            <TypeProduct name={'Giới thiệu'}/>
+            <TypeProduct name={'Liên hệ'}/>
            </WrapperTypeProduct>
            <div id="container" style={{height: '1000px', width:'100%'}}>
            <SliderComponent arrImages={[ slider1, slider2, slider3]}/>  
            {/* flexwrap: wrap để tự động xuống hàng khi hết chỗ */}
-           <WrapperProduct >
-                {products?.data?.map((product) =>{
+           <h3 style={{ 
+                textAlign: 'center', 
+                fontFamily: "'Roboto', sans-serif", 
+                fontSize: '1.5rem', 
+                // fontWeight: 'bold', 
+                marginTop: '50px' 
+            }}>Sản phẩm mới</h3>
+           <WrapperProduct style={{marginBottom:'30px'}}>
+            
+                {products?.data.reverse().slice(0, 10).map((product) =>{
                     return (
                         // truyền data trả về từ api vào cardcomponent
                         <CardComponent
@@ -121,6 +151,7 @@ const HomePage = () => {
                         discount={product.discount}
                         selled= {product.selled}
                         id={product._id}
+                        
                         />
                     )
                 })}
@@ -128,7 +159,8 @@ const HomePage = () => {
               
                 
             </WrapperProduct> 
-            <div style={{width:'100%', display:'flex', justifyContent:'center', marginTop:'10px'}}>
+            
+            <div style={{width:'100%', display:'flex', justifyContent:'center', marginTop:'30px'}}>
             <WrapperButtonMore
             style={{marginBottom:'10px', 
             background:'rgb(68, 68, 68)',
@@ -155,6 +187,7 @@ const HomePage = () => {
            </div>
         </div>
        </Loading>
+       </>
     )
 }
 

@@ -38,7 +38,7 @@ export const WrapperLabel = styled.div`
 export const WrapperContentInfo = styled.div`
   height: 118px;
   width: 320px;
-  background-color: #fff;
+  background-color: #F6F1EB;
   border-radius: 6px;
   padding: 10px;
 `

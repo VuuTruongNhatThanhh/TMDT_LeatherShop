@@ -13,6 +13,27 @@ export const signupUser = async (data) => {
     return res.data
 }
 
+export const verifyUser = async (id, otp) => {
+    const res = await axios.post(`${API_URL_BACK_END}/user/verify`,id, otp)
+    return res.data
+}
+
+export const forgotPassUser = async (email) => {
+    const res = await axios.post(`${API_URL_BACK_END}/user/forgot-pass`,email)
+    return res.data
+}
+
+export const changePassUser = async (id, password, confirmPassword) => {
+    const res = await axios.post(`${API_URL_BACK_END}/user/change-pass`,id, password, confirmPassword)
+    return res.data
+}
+
+export const pointUser = async (id,point) => {
+    const res = await axios.post(`${API_URL_BACK_END}/user/point`,id,point)
+    return res.data
+}
+
+
 export const getDetailsUser = async (id, access_token) => {
     const res = await axiosJWT.get(`${API_URL_BACK_END}/user/get-details/${id}`,{
         headers: {

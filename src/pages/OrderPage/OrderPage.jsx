@@ -26,6 +26,7 @@ const OrderPage = () => {
 
   const [listChecked, setListChecked] = useState([])
   const [isOpenModalUpdateInfo, setIsOpenModalUpdateInfo] = useState(false)
+ 
   const [stateUserDetails, setStateUserDetails] = useState({
     name: '',
     phone: '',
@@ -49,6 +50,7 @@ const OrderPage = () => {
     }
   };
   // console.log('listChecked', listChecked)
+
 
   const handleChangeCount = (type, idProduct, limited) => {
     if(type === 'increase') {
@@ -144,7 +146,10 @@ const OrderPage = () => {
   },[priceMemo])
 
   const totalPriceMemo = useMemo(() => {
+   
+    
     return Number(priceMemo) - Number(priceDiscountMemo) + Number(diliveryPriceMemo)
+    
   },[priceMemo,priceDiscountMemo, diliveryPriceMemo])
 
   const handleRemoveAllOrder = () => {
@@ -222,8 +227,8 @@ const OrderPage = () => {
     },
   ]
   return (
-    <div style={{background: '#f5f5fa', with: '100%', height: '100vh'}}>
-      <div style={{height: '100%', width: '1270px', margin: '0 auto'}}>
+    <div style={{background: '#F6F1EB', with: '100%', height: '100vh', padding:'0 120px'}}>
+      <div style={{height: '100%', width: '1150px', margin: '0 auto'}}>
         <h3 style={{fontWeight: 'bold'}}>Giỏ hàng</h3>
         <div style={{ display: 'flex', justifyContent: 'center'}}>
           <WrapperLeft>
@@ -233,6 +238,7 @@ const OrderPage = () => {
                 ? 1 : diliveryPriceMemo === 40000 ? 0
                 : order.orderItemsSlected.length === 0 ? 0:  3}/>
             </WrapperStyleHeaderDilivery>
+           
             <WrapperStyleHeader>
                 <span style={{display: 'inline-block', width: '390px'}}>
                   {/*checked: chỉ check trong trường hợp đã chọn tất cả, trường hợp bỏ check 1 cái sẽ mất check */}
@@ -308,7 +314,7 @@ const OrderPage = () => {
               <WrapperTotal>
                 <span>Tổng tiền</span>
                 <span style={{display:'flex', flexDirection: 'column'}}>
-                  <span style={{color: 'rgb(254, 56, 52)', fontSize: '24px', fontWeight: 'bold'}}>{convertPrice(totalPriceMemo)}<sup> đ</sup></span>
+                  <span style={{color: 'rgb(254, 56, 52)', fontSize: '24px', fontWeight: 'bold'}}> {convertPrice(totalPriceMemo < 0 ? 0 : totalPriceMemo)}<sup> đ</sup></span>
                   <span style={{color: '#000', fontSize: '11px'}}>(Đã bao gồm VAT nếu có)</span>
                 </span>
               </WrapperTotal>

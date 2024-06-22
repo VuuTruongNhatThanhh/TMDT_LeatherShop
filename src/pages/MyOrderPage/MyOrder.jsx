@@ -15,7 +15,7 @@ import { useMutationHooks } from '../../hooks/useMutationHook';
 import * as  UserService from '../../services/UserService'
 import Loading from '../../components/LoadingComponent/Loading';
 // import * as message from '../../components/Message/Message'
-import { updateUser } from '../../redux/slides/userSlide';
+import { partialUpdateUser, updateUser } from '../../redux/slides/userSlide';
 import {useLocation, useNavigate } from 'react-router-dom';
 import StepComponent from '../../components/StepComponent/StepComponent';
 import * as OrderService from '../../services/OrderService'
@@ -26,7 +26,7 @@ const MyOrder = () => {
   // console.log('location', location)
   const { state } = location
   const navigate = useNavigate()
-
+  const dispatch = useDispatch()
   const fetchMyOrder = async () => {
     const res = await OrderService.getOrderByUserId(state?.id, state?.token)
     return res.data
@@ -50,32 +50,52 @@ const handleDetailsOrder = (id) => {
 
   const mutation = useMutationHooks(
     (data) => {
-      const { id, token, orderItems } = data
-      const res = OrderService.cancelOrder(id, token, orderItems)
+      
+      const res = OrderService.updateOrder(data)
+      return res
+    }
+  )
+
+  const mutationPoint = useMutationHooks(
+    (data) => {
+      
+      const res = UserService.pointUser(data)
       return res
     }
   )
 
   const handleCanceOrder = (order) => {
-    mutation.mutate({id: order._id, token: state?.token, orderItems: order?.orderItems }, {
+    mutation.mutate({orderId: order._id, status:'Đã hủy' }, {
       onSuccess: () => {
         queryOrder.refetch()
       },
     })
   }
+  
+  const handleDeliveredOrder = (order) => {
+    mutation.mutate({orderId: order._id, status:'Đã giao' }, {
+      onSuccess: () => {
+        queryOrder.refetch()
+      },
+    })
+
+    mutationPoint.mutate({id: user?.id, point: 1})
+    dispatch(partialUpdateUser({point: user?.point+1}))
+  }
   const {isPending: isPendingCancel, isSuccess: isSuccessCancel, isError: isErrorCancle, data: dataCancel } = mutation
 
   useEffect(() => {
     if (isSuccessCancel && dataCancel?.status === 'OK') {
-      message.success('Hủy đơn hàng thành công')
+      message.success('Cập nhật đơn thành công')
     } else if(isSuccessCancel && dataCancel?.status === 'ERR') {
       message.error(dataCancel?.message)
     }else if (isErrorCancle) {
-      message.error('Có lỗi trong quá trình hủy đơn hàng')
+      message.error('Có lỗi trong quá trình cập nhật đơn hàng')
     }
   }, [isErrorCancle, isSuccessCancel])
 
   const renderProduct = (data) => {
+    
     return data?.map((order) => {
       return <WrapperHeaderItem key={order?._id}> 
               <img src={order?.image} 
@@ -105,14 +125,14 @@ const handleDetailsOrder = (id) => {
         <div style={{height: '100%', width: '1270px', margin: '0 auto'}}>
           <h4>Đơn hàng của tôi</h4>
           <WrapperListOrder>
-            {data?.map((order) => {
+            {Array.isArray(data) && data.slice().reverse().map((order) => {
               return (
                 <WrapperItemOrder key={order?._id}>
                   <WrapperStatus>
                     <span style={{fontSize: '14px', fontWeight: 'bold'}}>Trạng thái</span>
                     <div>
-                      <span style={{color: 'rgb(255, 66, 78)'}}>Giao hàng: </span>
-                      <span style={{color: 'rgb(90, 32, 193)', fontWeight: 'bold'}}>{`${order.isDelivered ? 'Đã giao hàng': 'Chưa giao hàng'}`}</span>
+                      <span style={{color: 'rgb(255, 66, 78)'}}>Tình trạng đơn hàng: </span>
+                      <span style={{color: 'rgb(90, 32, 193)', fontWeight: 'bold'}}>{`${order.status}`}</span>
                     </div>
                     <div>
                       <span style={{color: 'rgb(255, 66, 78)'}}>Thanh toán: </span>
@@ -129,18 +149,6 @@ const handleDetailsOrder = (id) => {
                     </div>
                     <div style={{display: 'flex', gap: '10px'}}>
                     <ButtonComponent
-                        onClick={() => handleCanceOrder(order)}
-                        size={40}
-                        styleButton={{
-                            height: '36px',
-                            border: '1px solid #9255FD',
-                            borderRadius: '4px'
-                        }}
-                        textButton={'Hủy đơn hàng'}
-                        styleTextButton={{ color: '#9255FD', fontSize: '14px' }}
-                      >
-                      </ButtonComponent>
-                      <ButtonComponent
                         onClick={() => handleDetailsOrder(order?._id)}
                         size={40}
                         styleButton={{
@@ -152,6 +160,34 @@ const handleDetailsOrder = (id) => {
                         styleTextButton={{ color: '#9255FD', fontSize: '14px' }}
                       >
                       </ButtonComponent>
+                      {order.status ==='Đang giao hàng'   && (
+                      <ButtonComponent
+                        onClick={() => handleDeliveredOrder(order)}
+                        size={40}
+                        styleButton={{
+                            height: '36px',
+                            border: '1px solid #9255FD',
+                            borderRadius: '4px'
+                        }}
+                        textButton={'Đã nhận được hàng'}
+                        styleTextButton={{ color: '#9255FD', fontSize: '14px' }}
+                      >
+                      </ButtonComponent>
+                      )}
+                      {order.status !== 'Đã hủy' && order.status !== 'Đã giao'  && order.status !== 'Đang giao hàng'  && (
+                    <ButtonComponent
+                        onClick={() => handleCanceOrder(order)}
+                        size={40}
+                        styleButton={{
+                            height: '36px',
+                            border: '1px solid #9255FD',
+                            borderRadius: '4px'
+                        }}
+                        textButton={'Hủy đơn hàng'}
+                        styleTextButton={{ color: '#9255FD', fontSize: '14px' }}
+                      >
+                      </ButtonComponent>
+                     )}
                     </div>
                   </WrapperFooterItem>
                 </WrapperItemOrder>

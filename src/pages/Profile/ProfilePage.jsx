@@ -10,6 +10,7 @@ import { Button, Image, Upload, message } from "antd";
 import { updateUser } from '../../redux/slides/userSlide'
 import {UploadOutlined} from '@ant-design/icons'
 import { getBase64 } from '../../utils'
+import HeaderComponent from '../../components/HeaderComponent/HeaderComponent'
 
 
 const ProfilePage = () => {
@@ -20,6 +21,7 @@ const ProfilePage = () => {
     const [phone, setPhone] = useState('')
     const [address, setAddress] = useState('')
     const [avatar, setAvatar] = useState('')
+    const [point, setPoint] = useState('')
 
     const mutation = useMutationHooks(
         (data) => {
@@ -32,16 +34,17 @@ const ProfilePage = () => {
   const dispatch = useDispatch()
   const { data, isPending, isSuccess, isError } = mutation
 
-          // gọi qua bên api
-
-//   console.log('data', data)
+ 
+  
 
     useEffect(()=>{
+      
         setEmail(user?.email)
         setName(user?.name)
         setPhone(user?.phone)
         setAddress(user?.address)
         setAvatar(user?.avatar)
+        setPoint(user?.point)
     },[user])
 
     useEffect(() =>{
@@ -98,6 +101,8 @@ const ProfilePage = () => {
        
     }
     return (
+        <>
+        <HeaderComponent isHiddenSearch />
         <div style={{width:'1270px', margin:'0 auto', height:'500px'}}>
             <WrapperHeader>Thông tin người dùng</WrapperHeader>
             <Loading isPending={isPending}>
@@ -150,7 +155,7 @@ const ProfilePage = () => {
 
                 <WrapperInput>
                     <WrapperLabel htmlFor="email">Email</WrapperLabel>
-                <InputForm style={{width:'300px'}} id="email" value={email} onChange={handleOnchangeEmail}/>
+                <InputForm disabled style={{width:'300px'}} id="email" value={email} onChange={handleOnchangeEmail}/>
                 {/* <ButtonComponent
                    
                     onClick={handleUpdate}
@@ -226,7 +231,33 @@ const ProfilePage = () => {
                 </ButtonComponent> */}
                 </WrapperInput>
 
-             
+                <WrapperInput>
+                    <WrapperLabel htmlFor="address">Điểm tích lũy</WrapperLabel>
+                <p>{point}</p>
+                
+                
+                {/* <ButtonComponent
+                   
+                    onClick={handleUpdate}
+                            bordered={false}
+                            size={40}
+                            styleButton={{
+                                background: '#444',
+                                height: '30px',
+                                width: 'fit-content',
+                                border: 'none',
+                                borderRadius:'4px',
+                                color: '#fff',
+                                fontWeight: '500'
+                                // margin: '26px 0 10px'
+                            }}
+                            textButton={'Cập nhật '}
+                            styleTextButton={{fontSize: '15px', fontWeight:'700'}}
+                  
+                >
+
+                </ButtonComponent> */}
+                </WrapperInput>
                 <ButtonComponent
                    
                    onClick={handleUpdate}
@@ -252,7 +283,10 @@ const ProfilePage = () => {
             </WrapperContentProfile>
             </Loading>
         </div>
+        </>
     )
+    
+
 }
 
 export default ProfilePage

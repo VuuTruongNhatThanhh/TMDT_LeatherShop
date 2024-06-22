@@ -35,7 +35,7 @@ export const WrapperItemOrder = styled.div`
   display: flex;
   align-items: center;
   padding: 9px 16px;
-  background: #fff;
+  background: #F6F1EB;
   margin-top: 12px;
 `
 
@@ -65,7 +65,7 @@ export const WrapperRight = styled.div`
 export const WrapperInfo = styled.div`
   padding: 17px 20px;
   border-bottom: 1px solid #f5f5f5;
-  background: #fff;
+  background: #F6F1EB;
   border-top-right-radius: 6px;
   border-top-left-radius: 6px;
   width: 100%
@@ -75,7 +75,7 @@ export const WrapperItemOrderInfo = styled.div`
 display: flex;
 align-items: center;
 padding: 9px 16px;
-background: #fff;
+background: #F6F1EB;
 margin-top: 12px;
 justify-content: center;
 `

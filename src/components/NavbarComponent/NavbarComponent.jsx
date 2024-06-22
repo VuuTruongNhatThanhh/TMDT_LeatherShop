@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { WrapperContent, WrapperLabelText, WrapperTextPrice, WrapperTextValue } from "./style";
 import { Checkbox, Col, Rate, Row } from "antd";
-
+import * as ProductService from '../../services/ProductService'
+import TypeProduct from "../TypeProduct/TypeProduct";
 // Thanh danh muc
 const NavbarComponent = () => {
+    const [typeProducts, setTypeProducts] = useState([])
     const onChange = () => { }
     const renderContent = (type, options) => {
         switch (type) {
@@ -47,11 +49,29 @@ const NavbarComponent = () => {
                 return {}
         }
     }
+
+
+    const fetchAllTypeProduct = async () =>{
+        const  res = await ProductService.getAllTypeProduct()
+        // console.log('res', res)
+        if(res?.status === 'OK'){
+            setTypeProducts(res?.data)
+        }
+      
+     }
+
+     useEffect(()=>{
+        fetchAllTypeProduct()
+     },[])
     return (
         <div>
-            <WrapperLabelText>label</WrapperLabelText>
+            {/* <WrapperLabelText>label</WrapperLabelText> */}
             <WrapperContent>
-            {renderContent('text',['Túi', 'Ví', 'Thắt lưng'])}
+            {typeProducts.map((item) => {
+            return (
+                <TypeProduct name={item} key={item}/>
+            )
+           })}
             </WrapperContent>
 {/* checkbox tỉnh thành */}
             {/* <WrapperContent>

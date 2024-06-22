@@ -121,7 +121,9 @@ const ProductDetailComponent = ({idProduct}) => {
                         price: productDetails?.price,
                         product: productDetails?._id,
                         discount: productDetails?.discount,
-                        countInstock: productDetails?.countInStock
+                        countInstock: productDetails?.countInStock,
+                        type: productDetails?.type
+
                     }
                 }))
             } else {
@@ -138,7 +140,7 @@ const ProductDetailComponent = ({idProduct}) => {
        <Row style={{padding:'20px'}}>
         <Col span={13}>
             <Image style={{padding:'24px'}} src={productDetails?.image} alt="image product" preview={false} />
-            <Row style={{paddingTop:'10px', justifyContent:'space-between'}}>
+            {/* <Row style={{paddingTop:'10px', justifyContent:'space-between'}}>
                 <WrapperStyleColImage span={4}>
                 <WrapperStyleImageSmall src={imageProductSmall} alt="image small" preview={false}/>
                 </WrapperStyleColImage>
@@ -156,7 +158,7 @@ const ProductDetailComponent = ({idProduct}) => {
                 </WrapperStyleColImage>
                 
               
-            </Row>
+            </Row> */}
         </Col>
         <Col span={11} style={{padding:'10px'}}>
             <WrapperStyleNameProduct>{productDetails?.name}</WrapperStyleNameProduct>
@@ -166,19 +168,19 @@ const ProductDetailComponent = ({idProduct}) => {
             {/* <StarFilled style={{fontSize:'10px', color:'rgb(253,216,54)'}} />
             <StarFilled style={{fontSize:'10px', color:'rgb(253,216,54)'}} />
             <StarFilled style={{fontSize:'10px', color:'rgb(253,216,54)'}} /> */}
-            <WrapperStyleTextSell> | Đã bán 1000+</WrapperStyleTextSell>
+            <WrapperStyleTextSell> | Đã bán {productDetails?.selled}</WrapperStyleTextSell>
             </div>
             <WrapperPriceProduct>
                 <WrapperPriceTextProduct>{convertPrice(productDetails?.price)}<sup> đ</sup></WrapperPriceTextProduct>
             </WrapperPriceProduct>
             <div>
-                <span>Giao đến</span>
-                <span>{user?.address}</span>
-                <span>Đổi địa chỉ</span>
+                
+                <span>{productDetails?.description}</span>
+                
             </div>
 
-           <LikeButtonComponent dataHref={ REACT_APP_IS_LOCAL
-            ? "https://developers.facebook.com/docs/plugins/": window.location.href}/>
+           {/* <LikeButtonComponent dataHref={ REACT_APP_IS_LOCAL
+            ? "https://developers.facebook.com/docs/plugins/": window.location.href}/> */}
            
 
             <div style={{margin:'10px 0 20px', padding:'10px 0', borderTop:'1px solid #e5e5e5', borderBottom:'1px solid #e5e5e5'}}>
@@ -215,7 +217,7 @@ const ProductDetailComponent = ({idProduct}) => {
                 </ButtonComponent>
                 {errorLimitOrder && <div style={{color: 'red'}}>Sản phẩm hết hàng</div>}
                 </div>
-                <ButtonComponent
+                {/* <ButtonComponent
               
                     styleButton={{
                         background: '#fff',
@@ -231,7 +233,7 @@ const ProductDetailComponent = ({idProduct}) => {
                   
                 >
 
-                </ButtonComponent>
+                </ButtonComponent> */}
             </div>
         </Col>
         <CommentComponent 
@@ -239,7 +241,7 @@ const ProductDetailComponent = ({idProduct}) => {
             ?"https://developers.facebook.com/docs/plugins/comments#configurator"
             :window.location.href
         } 
-        width="1270" />
+        width="1200" />
       
        </Row>
        </Loading>

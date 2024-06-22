@@ -4,7 +4,7 @@ import { Button, Form, Modal, Select, Space, message } from "antd";
 import {PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined} from '@ant-design/icons'
 import TableComponent from "../TableComponent/TableComponent";
 import InputComponent from "../InputComponent/InputComponent";
-import { getBase64, renderOptions } from "../../utils";
+import { convertPrice, getBase64, renderOptions } from "../../utils";
 import { useMutationHooks } from "../../hooks/useMutationHook";
 import * as ProductService from '../../services/ProductService'
 import Loading from "../LoadingComponent/Loading";
@@ -40,6 +40,7 @@ const AdminProduct = () =>{
       discount:''
      })
      const [form] = Form.useForm()
+     const [form2] = Form.useForm()
     const [stateProduct, setStateProduct] = useState(initial())
 
     const [stateProductDetails, setStateProductDetails] = useState({
@@ -284,53 +285,53 @@ const AdminProduct = () =>{
       },
       {
         title: 'Giá tiền',
-        dataIndex: 'price',
+        dataIndex: 'price2',
         sorter: (a,b) => a.price - b.price,
         filters: [
           {
-            text: '>=50',
+            text: '>=1.000.000',
             value: '>=',
           },
           {
-            text: '<50',
+            text: '<1.000.000',
             value: '<',
           },
         ],
         onFilter: (value, record) => {
           // console.log('value', {value, record})
           if(value ==='>='){
-            return record.price >=50
+            return record.price >=1000000
           }
-          return record.price<50
+          return record.price<1000000
         },
       },
-      {
-        title: 'Đánh giá',
-        dataIndex: 'rating',
-        sorter: (a,b) => a.rating - b.rating,
-        filters: [
-          {
-            text: '>=4',
-            value: '>=',
-          },
-          {
-            text: '<4',
-            value: '<',
-          },
-        ],
-        onFilter: (value, record) => {
-          // console.log('value', {value, record})
-          if(value ==='>='){
-            // return record.rating >=4
-            return Number(record.rating) >=4
-          }
-          return  Number(record.rating) <4
-        },
-      },
+      // {
+      //   title: 'Đánh giá',
+      //   dataIndex: 'rating',
+      //   sorter: (a,b) => a.rating - b.rating,
+      //   filters: [
+      //     {
+      //       text: '>=4',
+      //       value: '>=',
+      //     },
+      //     {
+      //       text: '<4',
+      //       value: '<',
+      //     },
+      //   ],
+      //   onFilter: (value, record) => {
+      //     // console.log('value', {value, record})
+      //     if(value ==='>='){
+      //       // return record.rating >=4
+      //       return Number(record.rating) >=4
+      //     }
+      //     return  Number(record.rating) <4
+      //   },
+      // },
       {
         title: 'Loại sản phẩm',
         dataIndex: 'type',
-
+        ...getColumnSearchProps('type')
       },
       {
         title: 'Chức năng',
@@ -339,13 +340,13 @@ const AdminProduct = () =>{
       },
     ];
     const dataTable = products?.data.length && products?.data.map((product) =>{
-      return {...product, key:product._id}
+      return {...product, key:product._id, price2: convertPrice(product.price)}
     })
 
     useEffect(()=>{
       if(isSuccess && data?.status ==='OK'){
         message.success('Tạo sản phẩm thành công')
-        handleCancel()
+        handleCancel2()
       } else if(isError) {
         message.error('Có lỗi trong quá trình tạo sản phẩm')
       }
@@ -398,6 +399,21 @@ const AdminProduct = () =>{
           discount:''
         })
         form.resetFields()
+      };
+
+      const handleCancel2 = () => {
+        setIsModalOpen(false);
+        setStateProduct({
+          name: '',
+          price: '',
+          description: '',
+          rating: '',
+          image:'',
+          type:'',
+          countInStock:'',
+          discount:''
+        })
+        form2.resetFields()
       };
 
       const handleCancelDelete =()=>{
@@ -545,7 +561,7 @@ const handleChangeSelect = (value) =>{
     };
   }}/>
           </div>
-          <ModalComponent forceRender title="Tạo mới sản phẩm" open={isModalOpen} onCancel={handleCancel} footer={null} >
+          <ModalComponent forceRender title="Tạo mới sản phẩm" open={isModalOpen} onCancel={handleCancel2} footer={null} >
           <Loading isPending={isPending}>
           <Form
     name="basic"
@@ -555,7 +571,7 @@ const handleChangeSelect = (value) =>{
     onFinish={onFinish}
     autoComplete="on"
     // truyền cho nó form để sử dụng form trong handleCancel
-    form={form}
+    form={form2}
   >
     <Form.Item
       label="Tên sản phẩm"
@@ -626,16 +642,16 @@ const handleChangeSelect = (value) =>{
       <InputComponent value={stateProduct.description} onChange={handleOnChange} name="description" />
     </Form.Item>
 
-    <Form.Item
+    {/* <Form.Item
       label="Đánh giá"
       name="rating"
       rules={[{ required: true, message: 'Vui lòng nhập đánh giá' }]}
     >
       <InputComponent value={stateProduct.rating} onChange={handleOnChange} name="rating" />
-    </Form.Item>
+    </Form.Item> */}
 
     <Form.Item
-      label="Giảm giá"
+      label="Giảm giá (%)"
       name="discount"
       rules={[{ required: false, message: 'Vui lòng nhập đánh giá' }]}
     >
@@ -723,16 +739,16 @@ const handleChangeSelect = (value) =>{
       <InputComponent value={stateProductDetails.description} onChange={handleOnChangeDetails} name="description" />
     </Form.Item>
 
-    <Form.Item
+    {/* <Form.Item
       label="Đánh giá"
       name="rating"
       rules={[{ required: true, message: 'Vui lòng nhập đánh giá' }]}
     >
       <InputComponent value={stateProductDetails.rating} onChange={handleOnChangeDetails} name="rating" />
-    </Form.Item>
+    </Form.Item> */}
 
     <Form.Item
-      label="Giảm giá"
+      label="Giảm giá (%)"
       name="discount"
       rules={[{ required: false, message: 'Vui lòng nhập đánh giá' }]}
     >

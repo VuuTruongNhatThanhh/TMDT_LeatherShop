@@ -1,4 +1,5 @@
 import { axiosJWT } from "./UserService"
+import axios from "axios"
 import { API_URL_BACK_END, REACT_APP_FB_ID, REACT_APP_IS_LOCAL } from "../apiConfig";
 // export const createProduct = async (data) => {
 //   const res = await axios.post(`${process.env.REACT_APP_API_URL}/product/create`, data)
@@ -6,11 +7,18 @@ import { API_URL_BACK_END, REACT_APP_FB_ID, REACT_APP_IS_LOCAL } from "../apiCon
 // // }
 // http://localhost:3001/api/order/get-order-details/639724669c6dda4fa11edcde
 export const createOrder = async (data,access_token) => {
+  // console.log('data',data)
   const res = await axiosJWT.post(`${API_URL_BACK_END}/order/create`, data, {
       headers: {
           token: `Bearer ${access_token}`,
       }
   })
+  return res.data
+}
+
+export const updateOrder = async (id,status) => {
+  // console.log('data',data)
+  const res = await axios.post(`${API_URL_BACK_END}/order/update`,id, status)
   return res.data
 }
 

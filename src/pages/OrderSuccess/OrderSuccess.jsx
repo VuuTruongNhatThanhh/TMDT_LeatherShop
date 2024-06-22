@@ -29,20 +29,20 @@ const OrderSuccess = () => {
   const {state} = location
 
   return (
-    <div style={{background: '#f5f5fa', with: '100%', height: '100vh'}}>
+    <div style={{background: '#F6F1EB', with: '100%', height: '100vh'}}>
       <Loading isPending={false}>
         <div style={{height: '100%', width: '1270px', margin: '0 auto'}}>
           <h3>Đơn hàng đặt thành công</h3>
           <div style={{ display: 'flex', justifyContent: 'center'}}>
             <WrapperContainer>
-              <WrapperInfo>
+              {/* <WrapperInfo>
                 <div>
                   <Lable>Phương thức giao hàng</Lable>
                   <WrapperValue>
                   <span style={{color: '#ea8500', fontWeight: 'bold'}}>{orderContant.delivery[state?.delivery]}</span> Giao hàng tiết kiệm
                   </WrapperValue>
                 </div>
-              </WrapperInfo>
+              </WrapperInfo> */}
               <WrapperInfo>
                 <div>
                   <Lable>Phương thức thanh toán</Lable>
@@ -52,10 +52,11 @@ const OrderSuccess = () => {
                   </WrapperValue>
                 </div>
               </WrapperInfo>
-              <WrapperItemOrderInfo>
+              <WrapperItemOrderInfo style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 {state.orders?.map((order)=>{
                   return (
-                                       <WrapperItemOrder key={order?.product}>
+                   
+                                       <WrapperItemOrder key={order?.product} style={{ display: 'flex', width: '100%' }}>
                                         <div style={{width: '500px', display: 'flex', alignItems: 'center', gap: 4}}> 
                                         {/* checked: nếu trong listChecked có id của nó thì đánh dấu đã check */}
                                           
@@ -77,6 +78,7 @@ const OrderSuccess = () => {
                                         
                                         </div>
                                       </WrapperItemOrder>
+                                      
                   )
                 })}
                   

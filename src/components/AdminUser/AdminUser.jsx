@@ -245,6 +245,8 @@ const AdminUser = () =>{
         // ),
     });
 
+    const isAdminPresent = users?.data.some(user => user.isAdmin);
+
     const columns = [
       {
         title: 'Tên người dùng',
@@ -295,8 +297,10 @@ const AdminUser = () =>{
         render: renderAction,
       },
     ];
+
+    
     const dataTable = users?.data.length && users?.data.map((user) =>{
-      return {...user, key:user._id, isAdmin: user.isAdmin ? 'TRUE' : 'FALSE'}
+      return {...user, key:user._id, isAdmin: user.isAdmin ? 'X' : ''}
     })
 
     useEffect(()=>{
@@ -459,9 +463,9 @@ const handleDeleteManyUsers = (ids) =>{
     return (
         <div>
             <WrapperHeader>Quản lý người dùng</WrapperHeader>
-            <div style={{marginTop:'10px'}}>
+            {/* <div style={{marginTop:'10px'}}>
             <Button onClick={showModal}  style={{height:'50px',width:'50px', borderRadius:'6px', borderStyle:'dashed'}}><PlusOutlined /></Button>
-            </div>
+            </div> */}
             <div style={{marginTop:'20px'}}>
               {/* Đưa tên cột và data trong table qua */}
           <TableComponent handleDeleteMany={handleDeleteManyUsers} columns={columns} isPending={isPendingUsers} data={dataTable} onRow={(record, rowIndex) => {

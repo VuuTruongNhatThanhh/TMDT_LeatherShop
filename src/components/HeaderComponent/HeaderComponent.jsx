@@ -161,7 +161,7 @@ const HeaderComponent = ({isHiddenSearch=false, isHiddenCart =false}) => {
                     <Badge count={order?.orderItems?.length} size="small">
                     <ShoppingCartOutlined style={{ fontSize: '30px', color: 'black'}} />
                     </Badge>
-                    <span style={{color:'black'}}>Giỏ hàng</span>
+                    {/* <span style={{color:'black'}}>Giỏ hàng</span> */}
 
                     </div>
                 )}

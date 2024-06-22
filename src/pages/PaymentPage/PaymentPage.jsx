@@ -1,4 +1,4 @@
-import {Form, Radio, message } from 'antd'
+import {Checkbox, Form, Radio, message } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { Lable, WrapperInfo, WrapperLeft, WrapperRadio, WrapperRight, WrapperTotal } from './style';
 
@@ -13,7 +13,7 @@ import * as  UserService from '../../services/UserService'
 import * as OrderService from '../../services/OrderService'
 import Loading from '../../components/LoadingComponent/Loading';
 
-import { updateUser } from '../../redux/slides/userSlide';
+import { partialUpdateUser, updateUser } from '../../redux/slides/userSlide';
 import { useNavigate } from 'react-router-dom';
 import { removeAllOrderProduct } from '../../redux/slides/orderSlide';
 import { PayPalButton } from "react-paypal-button-v2";
@@ -29,6 +29,7 @@ const PaymentPage = () => {
   const [sdkReady , setSdkReady] = useState(false)
 
   const [isOpenModalUpdateInfo, setIsOpenModalUpdateInfo] = useState(false)
+  const [usePoints, setUsePoints] = useState(false); // State để lưu trạng thái sử dụng điểm tích lũy
   const [stateUserDetails, setStateUserDetails] = useState({
     name: '',
     phone: '',
@@ -38,6 +39,10 @@ const PaymentPage = () => {
   const [form] = Form.useForm();
 
   const dispatch = useDispatch()
+ // Function to handle checkbox change
+ const handleUsePointsChange = (e) => {
+  setUsePoints(e.target.checked);
+};
 
 
   useEffect(() => {
@@ -95,19 +100,32 @@ const PaymentPage = () => {
   const diliveryPriceMemo = useMemo(() => {
     if( order?.orderItemsSlected?.length === 0) {
        return 0
-     } else {
+       
+     } else if(priceMemo>=1000000 && priceMemo<1500000){
+       return 20000
+     } else if(priceMemo>=1500000){  
+       return 0
+ 
+     }
+      else {
        return 40000
      }
    },[priceMemo])
 
   const totalPriceMemo = useMemo(() => {
+  if(usePoints){
+    return Number(priceMemo) - Number(priceDiscountMemo) + Number(diliveryPriceMemo) - user?.point * 10000
+  }else{
     return Number(priceMemo) - Number(priceDiscountMemo) + Number(diliveryPriceMemo)
-  },[priceMemo,priceDiscountMemo, diliveryPriceMemo])
+  }
+  },[priceMemo,priceDiscountMemo, diliveryPriceMemo,usePoints])
 
   const handleAddOrder = () => {
+    if(!usePoints){
     if(user?.access_token && order?.orderItemsSlected && user?.name
       && user?.address && user?.phone && user?.city && priceMemo && user?.id) {
         // eslint-disable-next-line no-unused-expressions
+        // console.log('orderSelected', order?.orderItemsSlected)
         mutationAddOrder.mutate(
           { 
             // Lấy từ cái Redux vào
@@ -126,6 +144,35 @@ const PaymentPage = () => {
           }
         )
       }
+    } else{
+      if(user?.access_token && order?.orderItemsSlected && user?.name
+        && user?.address && user?.phone && user?.city && priceMemo && user?.id) {
+          // eslint-disable-next-line no-unused-expressions
+          // console.log('orderSelected', order?.orderItemsSlected)
+          mutationAddOrder.mutate(
+            { 
+              // Lấy từ cái Redux vào
+              token: user?.access_token, 
+              orderItems: order?.orderItemsSlected, 
+              fullName: user?.name,
+              address:user?.address, 
+              phone:user?.phone,
+              city: user?.city,
+              paymentMethod: payment,
+              itemsPrice: priceMemo,
+              shippingPrice: diliveryPriceMemo,
+              totalPrice: totalPriceMemo,
+              user: user?.id,
+              email: user?.email
+            }
+          )
+
+          mutationAddOrderUsePoint.mutate({
+            id: user?.id, point: -user?.point
+          })
+          dispatch(partialUpdateUser({point: 0}))
+        }
+    }
   }
   
   const mutationUpdate = useMutationHooks(
@@ -147,6 +194,15 @@ const PaymentPage = () => {
         ...rests } = data
       const res = OrderService.createOrder(
         { ...rests }, token)
+      return res
+    },
+  )
+
+  const mutationAddOrderUsePoint = useMutationHooks(
+    (data) => {
+      
+     
+      const res = UserService.pointUser(data)
       return res
     },
   )
@@ -189,6 +245,7 @@ const PaymentPage = () => {
   }
 
   const onSuccessPaypal = (details, data) => {
+    if(!usePoints){
     mutationAddOrder.mutate(
       { 
         token: user?.access_token, 
@@ -207,6 +264,33 @@ const PaymentPage = () => {
         email: user?.email
       }
     )
+  } else{
+    mutationAddOrder.mutate(
+      { 
+        token: user?.access_token, 
+        orderItems: order?.orderItemsSlected, 
+        fullName: user?.name,
+        address:user?.address, 
+        phone:user?.phone,
+        city: user?.city,
+        paymentMethod: payment,
+        itemsPrice: priceMemo,
+        shippingPrice: diliveryPriceMemo,
+        totalPrice: totalPriceMemo,
+        user: user?.id,
+        isPaid :true,
+        paidAt: details.update_time, 
+        email: user?.email
+      }
+    )
+
+    mutationAddOrderUsePoint.mutate({
+      id: user?.id, point: -user?.point
+    })
+
+    dispatch(partialUpdateUser({point: 0}))
+  
+  }
   }
 
 
@@ -259,21 +343,26 @@ const PaymentPage = () => {
   }, [])
 
   return (
-    <div style={{background: '#f5f5fa', with: '100%', height: '100vh'}}>
+    <div style={{background: '#F6F1EB', with: '100%', height: '100vh'}}>
       <Loading isPending={isLoadingAddOrder}>
         <div style={{height: '100%', width: '1270px', margin: '0 auto'}}>
           <h3>Thanh toán</h3>
           <div style={{ display: 'flex', justifyContent: 'center'}}>
             <WrapperLeft>
-              <WrapperInfo>
-                <div>
-                  <Lable>Chọn phương thức giao hàng</Lable>
-                  <WrapperRadio onChange={handleDilivery} value={delivery}> 
-                    <Radio  value="fast"><span style={{color: '#ea8500', fontWeight: 'bold'}}>FAST</span> Giao hàng tiết kiệm</Radio>
-                    <Radio  value="gojek"><span style={{color: '#ea8500', fontWeight: 'bold'}}>GO_JEK</span> Giao hàng tiết kiệm</Radio>
-                  </WrapperRadio>
-                </div>
+            <WrapperInfo>
+            {user?.point !== 0 && (
+  <div>
+    <Checkbox 
+      style={{margin: '10px 0'}} 
+      onChange={handleUsePointsChange}
+      checked={usePoints}
+    >
+      Sử dụng điểm tích lũy (điểm hiện có: {user?.point})
+    </Checkbox>
+  </div>
+)}
               </WrapperInfo>
+           
               <WrapperInfo>
                 <div>
                   <Lable>Chọn phương thức thanh toán</Lable>

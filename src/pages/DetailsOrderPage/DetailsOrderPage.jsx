@@ -33,7 +33,7 @@ const DetailsOrderPage = () => {
 
   return (
    <Loading isPending={isPending}>
-     <div style={{width: '100%', height: '100vh', background: '#f5f5fa'}}>
+     <div style={{width: '100%', height: '100vh', background: '#F6F1EB'}}>
       <div style={{ width: '1270px', margin: '0 auto', height: '1270px'}}>
         <h4>Chi tiết đơn hàng</h4>
         <WrapperHeaderUser>
@@ -91,7 +91,7 @@ const DetailsOrderPage = () => {
                 </WrapperNameProduct>
                 <WrapperItem>{convertPrice(order?.price)}</WrapperItem>
                 <WrapperItem>{order?.amount}</WrapperItem>
-                <WrapperItem>{order?.discount ? convertPrice(order?.price* order?.amount* order?.discount / 100) : '0 VND'}</WrapperItem>
+                <WrapperItem>{order?.discount ? convertPrice(order?.price* order?.amount* order?.discount / 100) : '0'}</WrapperItem>
                 
                 
               </WrapperProduct>
